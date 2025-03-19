@@ -1,0 +1,50 @@
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+public static void main(String[] args) {
+	
+ String filePath = "1.txt"; // Change this to the actual file path
+ Map<String, Integer> failedCounts = new HashMap<>();
+ Map<String, Integer> passedCounts = new HashMap<>();
+ int totalFailed = 0, totalPassed = 0;
+ 
+ try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+	 String line;
+	 boolean isFailingTest = false;
+
+	 while ((line = br.readLine()) != null) {
+		 if (line.contains(" ")) { 
+		                    // Test case line
+		                    String[] parts = line.split(" ");
+		                    isFailingTest = parts[1].equals("false"); 
+		                    if (isFailingTest) totalFailed++;
+		                    else totalPassed++;
+		                } else {
+		                    // Covered method line
+		                    failedCounts.put(line, failedCounts.getOrDefault(line, 0) + (isFailingTest ? 1 : 0));
+		                    passedCounts.put(line, passedCounts.getOrDefault(line, 0) + (isFailingTest ? 0 : 1));
+		                }
+		            }
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+
+		        // Compute and sort suspiciousness scores
+		        Map<String, Double> suspiciousnessScores = new HashMap<>();
+		        for (String method : failedCounts.keySet()) {
+		            int failed = failedCounts.getOrDefault(method, 0);
+		            int passed = passedCounts.getOrDefault(method, 0);
+
+		            double score = (failed / (double) totalFailed) / 
+		                           ((failed / (double) totalFailed) + (passed / (double) totalPassed));
+		            suspiciousnessScores.put(method, score);
+		        }
+
+		        // Sort by descending suspiciousness score
+		        suspiciousnessScores.entrySet().stream()
+		            .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+		            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+		    }
+}	

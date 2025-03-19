@@ -1,0 +1,82 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        String directoryPath = "C:\\Users\\jbaum\\OneDrive\\Documents\\TESTING 6673\\NewCoverageData"; 
+        File folder = new File(directoryPath);
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".txt"));
+
+        if (files == null || files.length == 0) {
+            System.out.println("No files found in the directory.");
+            return;
+        }
+
+        System.out.println("Total number of files in directory: " + files.length);
+
+        Map<String, Integer> failedCounts = new HashMap<>();
+        Map<String, Integer> passedCounts = new HashMap<>();
+        int totalFailed = 0, totalPassed = 0;
+
+        for (File file : files) {
+            processFile(file, failedCounts, passedCounts); // Process each file
+        }
+
+        totalFailed = failedCounts.values().stream().mapToInt(Integer::intValue).sum();
+        totalPassed = passedCounts.values().stream().mapToInt(Integer::intValue).sum();
+
+        Map<String, Double> suspiciousnessScores = calculateSuspiciousness(failedCounts, passedCounts, totalFailed, totalPassed);
+
+        suspiciousnessScores.entrySet().stream()
+            .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+    }
+
+    private static void processFile(File file, Map<String, Integer> failedCounts, Map<String, Integer> passedCounts) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            boolean isFailingTest = false;
+
+            while ((line = br.readLine()) != null) {
+                if (line.contains(" ")) { 
+                    String[] parts = line.split(" ");
+                    // Assume the second part indicates failure (false = failing)
+                    isFailingTest = parts[1].equals("false"); 
+                } else {
+                    // Update the counts for failed or passed tests
+                    failedCounts.put(line, failedCounts.getOrDefault(line, 0) + (isFailingTest ? 1 : 0));
+                    passedCounts.put(line, passedCounts.getOrDefault(line, 0) + (isFailingTest ? 0 : 1));
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.print("Failed Counts: " + failedCounts);
+        System.out.print("Passed Counts: " + passedCounts);
+
+    }
+
+    private static Map<String, Double> calculateSuspiciousness(Map<String, Integer> failedCounts, Map<String, Integer> passedCounts, int totalFailed, int totalPassed) {
+        Map<String, Double> scores = new HashMap<>();
+        for (String method : failedCounts.keySet()) {
+            int failed = failedCounts.getOrDefault(method, 0);
+            int passed = passedCounts.getOrDefault(method, 0);
+
+            double score = 0.0; // Default score if we can't compute it
+
+            if (totalFailed > 0 && totalPassed > 0) { // Prevent division by zero
+                double failedRatio = (totalFailed > 0) ? (failed / (double) totalFailed) : 0.0;
+                double passedRatio = (totalPassed > 0) ? (passed / (double) totalPassed) : 0.0;
+
+                // Prevent division by zero when both ratios are zero
+                if (failedRatio + passedRatio > 0) {
+                    score = failedRatio / (failedRatio + passedRatio);
+                    scores.put(method, score);
+                }
+            }
+        }
+
+        return scores;
+    }
+}
