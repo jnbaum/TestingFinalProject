@@ -1,98 +1,78 @@
-import java.io.*;
 import java.nio.file.*;
+import java.io.*;
 import java.util.*;
 
     
-    public class Main {
-    	
-    	 static Map<String, List<String>> testCoverage = new HashMap<>();
-         static Set<String> failedTests = new HashSet<>();
-         
-    	public static void main(String[]args) {
-      
-            String folderPath = "C:\\Users\\jbaum\\OneDrive\\Documents\\TESTING 6673\\NewCoverageData\\1.txt"; // Update path
-            readCoverageData(folderPath);
-            markFailedTests(3); // Randomly fail 3 tests
-            Map<String, Double> tarantulaScores = calculateTarantula();
-            printResults(tarantulaScores);
+    public class Main {         
+    	public static void main(String[]args) { //this method will take the input of the .txt files
+    		Map<String, Double> hashMap = new HashMap<>();
+    		
+    		String folderPath = "C:\\Users\\jbaum\\OneDrive\\Documents\\TESTING 6673\\NewCoverageData"; 
+    		readCoverageData(folderPath);
+    		markFailedTests(3);
     	}
         
-        static void readCoverageData(String folderPath) {
+        static void readCoverageData(String folderPath) { //reads all of the files
             try {
-                Files.walk(Paths.get(folderPath))
-                    .filter(Files::isRegularFile)
-                    .forEach(file -> processFile(file.toFile()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            	Files.walk(Paths.get(folderPath)) //traverses the directory to find the file that is given in main. Paths.get makes the file string to a path. 
+                .filter(Files::isRegularFile) //makes sure no directories are processed, only files
+                .forEach(file -> processFile(file.toFile())); //iterates over files and then sends each to processes
+            		} catch (IOException e) { //second half of the try/catch block. For exception handling.
+            			e.printStackTrace(); //prints the stack trace of any caught exceptions
+            		}
         }
 
-        static void processFile(File file) {
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                String testCase = br.readLine().trim(); // First line: test case
-                List<String> coveredMethods = new ArrayList<>();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    coveredMethods.add(line.trim());
-                }
-                testCoverage.put(testCase, coveredMethods);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        static void processFile(File file) { //processes the files
+        	  try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                  String testCase = br.readLine().trim(); // First line: test case
+                  List<String> coveredMethods = new ArrayList<>();
+                  String line;
+                  while ((line = br.readLine()) != null) {
+                      coveredMethods.add(line.trim());
+                  }
+                  testCoverage.put(testCase, coveredMethods);
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+
         }
 
-        static void markFailedTests(int numFails) {
-            List<String> allTests = new ArrayList<>(testCoverage.keySet());
-            Collections.shuffle(allTests);
-            for (int i = 0; i < numFails && i < allTests.size(); i++) {
-                failedTests.add(allTests.get(i));
-            }
+        static void markFailedTests(int numFails) { //marks some as failed
+           
         }
         
-        static Map<String, Double> calculateTarantula() {
-            Map<String, Double> scores = new HashMap<>();
-
-            int totalPassed = testCoverage.size() - failedTests.size();
-            int totalFailed = failedTests.size();
-
-            Map<String, Integer> ef = new HashMap<>();
-            Map<String, Integer> ep = new HashMap<>();
-
-            // Count ef and ep
-            for (Map.Entry<String, List<String>> entry : testCoverage.entrySet()) {
-                boolean isFailed = failedTests.contains(entry.getKey());
-                for (String method : entry.getValue()) {
-                    if (isFailed) {
-                        ef.put(method, ef.getOrDefault(method, 0) + 1);
-                    } else {
-                        ep.put(method, ep.getOrDefault(method, 0) + 1);
-                    }
-                }
-            }
-
-            // Compute Tarantula score
-            for (String method : ef.keySet()) {
-                int efValue = ef.getOrDefault(method, 0);
-                int epValue = ep.getOrDefault(method, 0);
-
-                double failRate = (totalFailed > 0) ? ((double) efValue / totalFailed) : 0;
-                double passRate = (totalPassed > 0) ? ((double) epValue / totalPassed) : 0;
-
-                double denominator = failRate + passRate;
-                double score = (denominator > 0) ? (failRate / denominator) : 0; // Avoid NaN
-
-                scores.put(method, score);
-            }
-
-            return scores;
+        static void countLineExecutions(String line, boolean isPassed) {  // Updates execution counts for passing and failing tests.
+        
         }
 
+        
+        static Map<String, Double> calculateTarantula() { //calculates tarantula
+			return tarantulascore;
+            
+        }
+        
+        static Map<String, Double> calculateSbi() { //calculates SBI
+        	return sbiscore;
+        }
+        
+        static Map<String, Double> calculateJaccard() { //calculates Jaccard
+        	return jaccardscore;
+        }
+        
+        static Map<String, Double> calculateOchiai(){ // calculates Ochiai
+        	return ochiaiscore;
+        }
 
+        
+        static Map<String, Double> getSortedSuspiciousness(Map<String, Double> scores) { // Returns a sorted version of the map based on scores in descending order.
+        	return sortedScores;
+        }
+
+        
         static void printResults(Map<String, Double> scores) { //this method will print the results.
-            scores.entrySet().stream()
-                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue())) 
-                .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
-        }
+            
 
     }
 
+}
+    
