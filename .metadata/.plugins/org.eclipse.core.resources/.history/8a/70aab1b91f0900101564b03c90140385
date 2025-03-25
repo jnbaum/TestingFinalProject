@@ -162,7 +162,7 @@ public class Main {
     	    Map<String, Double> ochiaiScores = calculateOchiai();
 
     	    // Print header
-    	    System.out.printf("%-10s %-15s %-15s %-15s %-15s%n", "Method", "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTarantula", "\tSBI", "Jaccard", "Ochiai");
+    	    System.out.printf("%-10s %-15s %-15s %-15s %-15s%n", "Method", "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTarantula", "\t\tSBI", "Jaccard", "Ochiai");
     	    System.out.println("-".repeat(300));
 
     	 

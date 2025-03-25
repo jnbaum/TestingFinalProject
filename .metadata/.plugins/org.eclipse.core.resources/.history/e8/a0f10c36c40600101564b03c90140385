@@ -155,25 +155,9 @@ public class Main {
     }
 
     static void printResults() {
-   
-    	    Map<String, Double> tarantulaScores = calculateTarantula();
-    	    Map<String, Double> sbiScores = calculateSbi();
-    	    Map<String, Double> jaccardScores = calculateJaccard();
-    	    Map<String, Double> ochiaiScores = calculateOchiai();
-
-    	    // Print header
-    	    System.out.printf("%-10s %-15s %-15s %-15s %-15s%n", "Method", "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTarantula", "\tSBI", "Jaccard", "Ochiai");
-    	    System.out.println("-".repeat(300));
-
-    	 
-    	    for (String method : tarantulaScores.keySet()) {
-    	        double tarantula = tarantulaScores.getOrDefault(method, 0.0);
-    	        double sbi = sbiScores.getOrDefault(method, 0.0);
-    	        double jaccard = jaccardScores.getOrDefault(method, 0.0);
-    	        double ochiai = ochiaiScores.getOrDefault(method, 0.0);
-
-    	        System.out.printf("%-150s %-15.3f %-15.3f %-15.3f %-15.3f%n", method, tarantula, sbi, jaccard, ochiai);
-    	    }
-    	}
-
+        System.out.println("Tarantula Scores: " + calculateTarantula());
+        System.out.println("SBI Scores: " + calculateSbi());
+        System.out.println("Jaccard Scores: " + calculateJaccard());
+        System.out.println("Ochiai Scores: " + calculateOchiai());
+    }
 }
