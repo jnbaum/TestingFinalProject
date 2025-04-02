@@ -6,7 +6,7 @@ public class Main {
     static Map<String, List<String>> testCoverage = new HashMap<>();
     static Set<String> failedTests = new HashSet<>();
 
-    public static void main(String[] args) { //main method, takes input for file and runs three other methods
+    public static void main(String[] args) {
         String folderPath = "C:\\Users\\jbaum\\OneDrive\\Documents\\TESTING 6673\\NewCoverageData";
         readCoverageData(folderPath);
         markFailedTests(3);
@@ -23,7 +23,7 @@ public class Main {
         }
     }
 
-    static void processFile(File file) { //method to process the files
+    static void processFile(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String testCase = br.readLine().trim();
             List<String> coveredMethods = new ArrayList<>();
@@ -45,7 +45,7 @@ public class Main {
         }
     }
 
-    static Map<String, Double> calculateTarantula() {  //method to calculate tarantula
+    static Map<String, Double> calculateTarantula() {
         Map<String, Double> tarantulaScores = new HashMap<>();
         int totalPassed = testCoverage.size() - failedTests.size();
         int totalFailed = failedTests.size();
@@ -79,7 +79,7 @@ public class Main {
         return tarantulaScores;
     }
 
-    static Map<String, Double> calculateSbi() {  //method to calculate SBI
+    static Map<String, Double> calculateSbi() {
         Map<String, Double> sbiScores = new HashMap<>();
         Map<String, Integer> ef = new HashMap<>();
         Map<String, Integer> ep = new HashMap<>();
@@ -104,7 +104,7 @@ public class Main {
         return sbiScores;
     }
 
-    static Map<String, Double> calculateJaccard() {  //method to calculate Jaccard
+    static Map<String, Double> calculateJaccard() {
         Map<String, Double> jaccardScores = new HashMap<>();
         Map<String, Integer> ef = new HashMap<>();
         Map<String, Integer> ep = new HashMap<>();
@@ -129,7 +129,7 @@ public class Main {
         return jaccardScores;
     }
 
-    static Map<String, Double> calculateOchiai() {  //method to calculate Ochiai
+    static Map<String, Double> calculateOchiai() {
         Map<String, Double> ochiaiScores = new HashMap<>();
         Map<String, Integer> ef = new HashMap<>();
         Map<String, Integer> ep = new HashMap<>();
@@ -154,7 +154,7 @@ public class Main {
         return ochiaiScores;
     }
 
-    static void printResults() { //method to print out results
+    static void printResults() {
    
     	    Map<String, Double> tarantulaScores = calculateTarantula();
     	    Map<String, Double> sbiScores = calculateSbi();
